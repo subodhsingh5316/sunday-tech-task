@@ -1,0 +1,49 @@
+.tableHead{
+    display: flex;
+    flex-direction: row;
+    height: 10vh;
+    justify-content: space-between;
+    background-color: grey;
+    margin-left: 4%;
+    margin-right: 4%;
+    margin-top: 5px;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-top: 20px;
+    /* //flex flex-row justify-between m-1 mx-5 bg-slate-50 p-3 border-l-4 border-indigo-500 rounded */
+}
+.tablerow{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color:aliceblue;
+    border-left: 5px solid orange;
+    margin-left: 4%;
+    margin-right: 4%;
+    margin-top: 5px;
+    border-radius: 10px;
+    text-align: center;
+    /* margin-right: 1%; */
+    padding: 0.5rem;
+    /* //flex flex-row justify-between m-1 mx-5 bg-slate-50 p-3 border-l-4 border-indigo-500 rounded */
+}
+.tablerow-child{
+    display: flex;
+    flex-direction: row;
+}
+.serchbar{
+    display: flex;
+    flex-direction: row;
+    margin: 4%;
+    /* flex flex-row m-5 */
+}
+.serch_icon{
+    display: flex;
+    position: absolute;
+    justify-items: center;
+    padding-left: 8px;
+    color:grey;
+    padding-top: 10px;
+    /* margin-top: 20px; */
+    /* absolute inset-y-0 left-0 flex items-center pl-2 color-grey */
+}
