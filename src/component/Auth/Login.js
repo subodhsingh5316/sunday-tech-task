@@ -52,7 +52,6 @@ function Login() {
                         return errors;
                     }}
                     onSubmit={(values, { setSubmitting }) => {
-                        console.log("subodh")
 
                         const users = JSON.parse(localStorage.getItem("users")) || [];
                         const userExist = users.find(({ email }) => email === values.email);

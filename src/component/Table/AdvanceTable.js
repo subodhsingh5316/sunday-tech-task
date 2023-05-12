@@ -1,21 +1,62 @@
-import { Button, Pagination, Skeleton } from '@mui/material'
+import { Button, Pagination, Skeleton, Stack, Typography } from '@mui/material'
 import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import PopUp from '../popup/PopUp';
 import { Box } from '@mui/system';
 import styles from './table.module.css'
+import Drawer from '@material-ui/core/Drawer';
+import { makeStyles } from '@material-ui/core/styles';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import SearchIcon from '@mui/icons-material/Search';
+import {
+  Container,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+  Input
+} from '@material-ui/core';
+import { VisibilityOff } from '@mui/icons-material';
 
-
+const useStyles = makeStyles({
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: 'auto',
+  },
+  MuiDrawerPaperAnchorRight: {
+    borderTopLeftRadius: '25px'
+  }
+});
 const Table = (props) => {
   const { loading, data, search, handleOnchange } = props
   const [index, setIndex] = useState()
   const [popData, setPopData] = useState()
   const [page, setPage] = useState(1)
+  const [right, setRight] = useState()
 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const classes = useStyles();
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
 
   const selectPageHandler = (selectedPage) => {
     if (
@@ -27,7 +68,8 @@ const Table = (props) => {
     }
   };
   const handleSidebar = (i) => {
-
+    setRight("right")
+    toggleDrawer("right", true)
     console.log("123", i)
     fetch(`https://dummyjson.com/users/${i}`).then(res => res.json()).then(result => { setPopData(result) })
     handleShow()
@@ -36,23 +78,61 @@ const Table = (props) => {
   }
 
   return (
-    <Box>
-      <Box className={styles.serchbar}>
-        <Box>
-          <Box className="relative block">
-            <span class={styles.serch_icon}>
-              <i className='fa fa-search '></i>
-            </span>
-            <input className="placeholder:italic placeholder:text-slate-400 block bg-white w-48 border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
-              placeholder="Search for anything..." type="text" name='search' value={search} onChange={(e) => handleOnchange(e)} />
-          </Box>
+    <Container>
+      <Stack direction='row' my='5vh'mx='25px' >
+        <Box mt={'2vh'} bgcolor='white' >
+        <FormControl variant="standard">
+        <OutlinedInput
+          id="input-with-icon-adornment"
+          placeholder='Search name..'
+          backgroundColor='red'
+          startAdornment={
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          }
+          type="text" name='search' value={search} onChange={(e) => handleOnchange(e)} 
+          sx={{
+            borderRadius:'25px',
+            bgcolor:'#fff'
+          }}
+          autoFocus={false}
+        />
+        </FormControl>
+          {/* <span class={styles.serch_icon}>
+            <i className='fa fa-search '></i>
+          </span> */}
+          {/* <input className="placeholder:italic placeholder:text-slate-400 block bg-white w-48 border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
+            placeholder="Search for anything..." type="text" name='search' value={search} onChange={(e) => handleOnchange(e)} /> */}
         </Box>
-        <Box className='m-2'>
-          <span><i className='fa fa-filter'></i></span>
-          <span>filter</span>
+        <Stack direction={"row"}>
+        <Box component={'span'} mt="20px" mx='10px' sx={{
+          fontSize: {
+            lg: 22,
+            md: 14,
+            sm: 12,
+            xm: 10
+          }
+        }}>
+          <FilterAltIcon />
+          <Box sx={{
+          fontSize: {
+            lg: 16,
+            md: 12,
+            sm: 10,
+            xm: 10
+          }}}  component={'span'}>filter</Box>
         </Box>
-      </Box>
-      <Box className={styles.tableHead}>
+        </Stack>
+      </Stack>
+      <Stack direction={'row'} justifyContent='space-around' alignItems={'center'} sx={{
+        width: '100%',
+        bgcolor: 'grey',
+        height: '8vh',
+      }}
+        mx="2%"
+        borderRadius={'5px'}
+      >
         <Box sx={{
           fontSize: {
             lg: 17,
@@ -60,10 +140,10 @@ const Table = (props) => {
             sm: 10,
             xs: 10
           },
-          fontWeight:500,
+          fontWeight: 500,
           wordWrap: 'break-word',
           width: '11rem',
-        }}>IMAGES {" "}<span className='text-sm text-slate-600'><i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i></span></Box>
+        }}>IMAGES {" "}</Box>
         <Box sx={{
           fontSize: {
             lg: 17,
@@ -71,10 +151,11 @@ const Table = (props) => {
             sm: 10,
             xs: 10
           },
-          fontWeight:500,
+          fontWeight: 500,
           wordWrap: 'break-word',
           width: '11rem',
-        }} className='pl-9'>NAME {" "}<span className='text-sm text-slate-600'><i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i></span></Box>
+          paddingLeft:'60px'
+        }} mx='60px'>NAME {" "}</Box>
         <Box sx={{
           fontSize: {
             lg: 17,
@@ -82,10 +163,10 @@ const Table = (props) => {
             sm: 10,
             xs: 10
           },
-          fontWeight:500,
+          fontWeight: 500,
           wordWrap: 'break-word',
           width: '11rem',
-        }} className='pr-12'>GENDER {" "}<span className='text-sm text-slate-600'><i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i></span></Box>
+        }} className='pr-12'>GENDER {" "}</Box>
         <Box sx={{
           fontSize: {
             lg: 17,
@@ -93,11 +174,13 @@ const Table = (props) => {
             sm: 10,
             xs: 10
           },
-          fontWeight:500,
+          fontWeight: 500,
           wordWrap: 'break-word',
           width: '11rem',
-        }} >EMAIL {" "}<span className='text-sm text-slate-600'><i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i></span></Box>
-      </Box>
+          textAlign: 'end',
+          paddingRight: "20px"
+        }} >EMAIL {" "}<span style={{ color: 'GrayText' }}><i class="fa fa-arrow-up"></i><i class="fa fa-arrow-down"></i></span></Box>
+      </Stack>
       {loading ? (
         <div className='mx-5'>
           <Skeleton height='50px' />
@@ -112,7 +195,17 @@ const Table = (props) => {
             data && data?.slice(page * 5 - 5, page * 5).map((item, i) => {
               return (
                 <>
-                  <Box key={i} className={styles.tablerow} onClick={() => handleSidebar(item.id)}>
+                  <Stack direction={'row'} justifyContent='space-around' alignItems={'center'} sx={{
+                    width: '100%',
+                    bgcolor: 'grey',
+                    height: '8vh',
+                    mt:'5px',
+                    bgcolor:'#e6ffff',
+                    borderLeft:'5px solid orange'
+                  }}
+                    mx="2%"
+                    borderRadius={'5px'} onClick={() => handleSidebar(item.id)}>
+
                     <Box sx={{
                       fontSize: {
                         lg: 16,
@@ -122,9 +215,21 @@ const Table = (props) => {
                       },
                       wordWrap: 'break-word',
                       width: '11rem',
-                    }} className='flex flex-row' style={{ width: "22%" }}>
+                    }}  style={{ width: "22%" }}>
                       <Avatar sx={{ bgcolor: "wheat" }} alt="Remy Sharp" src={item.image} />
                     </Box>
+                    <Button sx={{
+                      fontSize: {
+                        lg: 14,
+                        md: 11,
+                        sm: 12,
+                        xs: 10
+                      },
+                      wordWrap: 'break-wordk',
+                      width: '11rem',
+                      color: 'black',
+                      textAlign:'center',
+                    }} variant='text' onClick={toggleDrawer("right", true)}>{item.firstName}{" "}{item.lastName}</Button>
                     <Box sx={{
                       fontSize: {
                         lg: 16,
@@ -134,16 +239,8 @@ const Table = (props) => {
                       },
                       wordWrap: 'break-word',
                       width: '11rem',
-                    }} className='text-center truncate' style={{ width: "22%" }}>{item.firstName}{" "}{item.lastName}</Box>
-                    <Box sx={{
-                      fontSize: {
-                        lg: 16,
-                        md: 13,
-                        sm: 12,
-                        xs: 10
-                      },
-                      wordWrap: 'break-word',
-                      width: '11rem',
+                      justifyContent:'end',
+                      textAlign:'center',
                     }} className='text-center truncate ' style={{ width: "22%" }}>{item.gender} </Box>
                     <Box sx={{
                       fontSize: {
@@ -154,26 +251,22 @@ const Table = (props) => {
                       },
                       wordWrap: 'break-word',
                       width: '11rem',
+                      textAlign:'end',
                     }} className='text-end truncate' style={{ width: "22%" }}>{item.email}</Box>
-                  </Box>
+                  </Stack>
                 </>
               )
             })
 
 
           }
-          {
-            show && (<PopUp placement={"end"} name={"end"} handleClose={handleClose} handleShow={handleShow} show={show} index={index} popData={popData} />)
-          }
         </>
 
       )
-
-
       }
       {/* Pagination */}
       {data && (
-        <div className='flex flex-row justify-between m-5 '>
+        <Stack flexDirection={'row'} justifyContent='space-between' mt='20px'>
           {/* Range information */}
           <p>
             Showing {Math.min((page - 1) * 5 + 1, data?.length)}-
@@ -181,7 +274,7 @@ const Table = (props) => {
           </p>
 
           {/* Pagination component */}
-          <div>
+          <Box>
             <Pagination
               count={Math.ceil(data?.length / 5)}
               page={page}
@@ -189,20 +282,25 @@ const Table = (props) => {
               variant='outlined'
               shape='rounded'
             />
-          </div>
-        </div>
+          </Box>
+        </Stack>
       )}
 
-
-    </Box>
+      <Drawer
+        className={classes.MuiDrawerPaperAnchorRight}
+        anchor={"right"}
+        open={state["right"]}
+        onClose={toggleDrawer("right", false)}
+        PaperProps={{ elevation: 0, style: { borderTopLeftRadius: "25px" } }}
+      >
+        {/* {list("right")} */}
+        <PopUp
+          toggleDrawer={toggleDrawer}
+          popData={popData}
+        />
+      </Drawer>
+    </Container>
   )
-
-
 }
 
 export default Table
-
-
-
-
-

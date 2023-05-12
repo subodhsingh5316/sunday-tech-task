@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import AdvanceTable from '../component/Table/AdvanceTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserById } from '../redux/slice/userSlice';
-import { Box, Button} from '@mui/material'
+import { Box, Container, Stack} from '@mui/material'
 import { useNavigate } from 'react-router-dom';
+import { Typography, Button } from '@material-ui/core';
 
 const UserList = () => {
     const [data, setData] = useState([])
@@ -42,24 +43,39 @@ const UserList = () => {
         nevigate('/')
     }
     return (
-        <Box sx={{background:"#EEEDEB"}}style={{minHeight:'100vh'}}>
-            <div className='flex flex-row justify-between p-12  h-24  '>
-                <div>
-                    <h3 className='text-gray-600'>User</h3>
-                    <small>Here are all the users for this project</small>
-                </div>
-                <div className='flex flex-column'>
-                    <Button variant='contained' onClick={()=>logout()}>Logout</Button>
-                    <Button variant='outlined' style={{marginTop:'5px'}}> + Add new</Button>
-                </div>
-            </div>
+        <Container sx={{bgcolor:"#EEEDEB"}}style={{minHeight:'100vh'}}>
+            <Stack direction={'row'} justifyContent={'space-between'} pt="5vh">
+                <Stack px='6%'>
+                    <Box sx={{
+                        color:'grey',
+                        fontSize:{
+                        lg:22,
+                        md:17,
+                        sm:13,
+                        xm:10
+                    },
+                    fontWeight:600
+                    }} component={'h3'} className='text-gray-600'>User</Box>
+                    <Box component={'small'} sx={{fontSize:{
+                        lg:15,
+                        md:12,
+                        sm:10,
+                        xm:10
+                    },
+                    color:'grey',}} >Here are all the users for this project</Box>
+                </Stack>
+                <Stack className='flex flex-column'>
+                    <Button variant="contained" color="primary" onClick={()=>logout()}>Logout</Button>
+                    <Button variant='outlined' color="primary" style={{marginTop:'5px'}}> + Add new</Button>
+                </Stack>
+            </Stack>
             <AdvanceTable
                 search={search}
                 handleOnchange={handleOnchange}
                 loading={loading} 
                 data={data} 
                 />
-        </Box>
+        </Container>
     )
 }
 
